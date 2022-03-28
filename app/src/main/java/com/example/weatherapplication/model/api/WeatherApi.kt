@@ -19,5 +19,11 @@ interface WeatherApi {
         @Query("lon") lon: Float,
         @Query("appid") key: String
     ): OnecallApiResponse
+
+    @GET("/data/2.5/onecall?exclude=current,minutely,hourly,alerts")
+    suspend fun getDailyWeather(
+        @Query("lat") lat: Float,
+        @Query("lon") lon: Float,
+        @Query("appid") key: String): OnecallApiResponse
 }
 
