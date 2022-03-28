@@ -36,7 +36,11 @@ class WeatherRepository {
         return api.getWeather(id, "e9fa256df6ebb4101bec1ec7eaa465f2")
     }
 
-    suspend fun getOnecallWeather(lat: Float, lon: Float): OnecallApiResponse {
+    suspend fun getHourlyWeather(lat: Float, lon: Float): OnecallApiResponse {
         return api.getHourlyWeather(lat, lon, "e9fa256df6ebb4101bec1ec7eaa465f2")
     }
+    suspend fun getDailyWeather(lat: Float, lon: Float) : OnecallApiResponse {
+        return api.getDailyWeather(lat, lon, "e9fa256df6ebb4101bec1ec7eaa465f2")
+    }
+
 }
