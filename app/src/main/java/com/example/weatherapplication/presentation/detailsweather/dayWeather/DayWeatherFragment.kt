@@ -1,4 +1,4 @@
-package com.example.weatherapplication.presentation.detailsweather
+package com.example.weatherapplication.presentation.detailsweather.dayWeather
 
 import android.os.Bundle
 import android.util.Log
@@ -6,27 +6,24 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.weatherapplication.R
+import com.example.weatherapplication.databinding.FragmentDayWeatherBinding
 import com.example.weatherapplication.databinding.FragmentDetailsWeatherBinding
-import com.example.weatherapplication.presentation.detailsweather.adapter.DaysViewpagerAdapter
+import com.example.weatherapplication.presentation.detailsweather.DetailsWeatherViewModel
 import com.example.weatherapplication.presentation.detailsweather.adapter.HourlyWeatherRecyclerAdapter
-import com.example.weatherapplication.presentation.weather.WeatherListViewModel
-import com.google.android.material.tabs.TabLayoutMediator
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 
-class DetailsWeatherFragment : Fragment() {
+class DayWeatherFragment(val cityId: Int, val today: Boolean) : Fragment() {
 
-    lateinit var binding: FragmentDetailsWeatherBinding
-    lateinit var viewModel: DetailsWeatherViewModel
+    lateinit var binding: FragmentDayWeatherBinding
+    lateinit var viewModel: DayWeatherViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,30 +34,15 @@ class DetailsWeatherFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        viewModel = ViewModelProvider(requireActivity()).get(DetailsWeatherViewModel::class.java)
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_details_weather, container, false)
-        return binding.root
+        viewModel = ViewModelProvider(requireActivity()).get(DayWeatherViewModel::class.java)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_day_weather, container, false)
+        return inflater.inflate(R.layout.fragment_day_weather, container, false)
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.fetchWeather(cityId)
 
-        binding.vpDays.adapter = DaysViewpagerAdapter(this, arguments?.getInt("cityid")!!)
-
-        TabLayoutMediator(binding.tlDays, binding.vpDays) {tab, position ->
-            when (position) {
-                0 -> tab.text = "Сегодня"
-                1 -> tab.text = "Завтра"
-            }
-        }.attach()
-
-        viewModel.fetchWeather(arguments?.getInt("cityid")!!)
-        binding.toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_baseline_arrow_back_24)
-        binding.toolbar.setNavigationOnClickListener {
-            findNavController().popBackStack()
-        }
         viewModel.weatherLiveData.observe(viewLifecycleOwner) {
 //            binding.tvCity.text = it.name
             val localdate = LocalDateTime.now()
@@ -83,7 +65,7 @@ class DetailsWeatherFragment : Fragment() {
 
 
 
-            binding.toolbar.title = it.name
+
             binding.tvTempmaxmin.text = "Макс. ${it.main?.temp_max?.minus(273)?.toInt()}℃ | Мин. ${it.main?.temp_min?.minus(273)?.toInt()}℃"
             binding.tvFeelslike.text = "Ощущается как ${it.main?.feels_like?.minus(273)?.toInt()}℃"
             binding.tvTemperature.text = "${it.main?.temp?.minus(273)?.toInt()}"
@@ -93,12 +75,6 @@ class DetailsWeatherFragment : Fragment() {
             val adapter = HourlyWeatherRecyclerAdapter(requireContext(), it)
             binding.rvWeatherHourly.adapter = adapter
         }
-
-       /* viewModel.hourlyWeatherLiveData.observe(viewLifecycleOwner){
-            Toast.makeText(requireContext(), it.size.toString(), Toast.LENGTH_SHORT.show())
-        }  Проверка  */
-
-
     }
 
 

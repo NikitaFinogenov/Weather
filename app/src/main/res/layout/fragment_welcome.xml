@@ -7,9 +7,9 @@
     tools:context=".presentation.welcome.WelcomeFragment">
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:src="@drawable/hqdefault"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:src="@drawable/egg"
         android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

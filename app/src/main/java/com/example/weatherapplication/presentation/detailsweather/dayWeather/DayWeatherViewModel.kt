@@ -1,4 +1,4 @@
-package com.example.weatherapplication.presentation.detailsweather
+package com.example.weatherapplication.presentation.detailsweather.dayWeather
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -10,7 +10,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class DetailsWeatherViewModel: ViewModel() {
+class DayWeatherViewModel(): ViewModel() {
+
 
     val weatherLiveData = MutableLiveData<WeatherResponse>()
     val hourlyWeatherLiveData = MutableLiveData<List<Hourly>>()
@@ -26,6 +27,4 @@ class DetailsWeatherViewModel: ViewModel() {
             Log.d("checkhourlyweather", hourlyWeatherLiveData.value.toString())
         }
     }
-
-
 }
