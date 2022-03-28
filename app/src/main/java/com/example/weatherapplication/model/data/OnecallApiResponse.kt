@@ -5,5 +5,6 @@ data class OnecallApiResponse(
     val lon: Float,
     val timezone: String,
     val timezone_offset: Int,
-    val hourly: List<Hourly>
+    val hourly: List<Hourly>?,
+    val daily: List<Daily>?
 )
