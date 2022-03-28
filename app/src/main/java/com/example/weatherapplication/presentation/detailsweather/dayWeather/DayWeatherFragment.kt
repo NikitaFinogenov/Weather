@@ -12,6 +12,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.weatherapplication.R
 import com.example.weatherapplication.databinding.FragmentDayWeatherBinding
 import com.example.weatherapplication.databinding.FragmentDetailsWeatherBinding
+import com.example.weatherapplication.model.data.Hourly
+import com.example.weatherapplication.model.data.WeatherResponse
 import com.example.weatherapplication.presentation.detailsweather.DetailsWeatherViewModel
 import com.example.weatherapplication.presentation.detailsweather.adapter.HourlyWeatherRecyclerAdapter
 import java.time.LocalDateTime
@@ -41,40 +43,57 @@ class DayWeatherFragment(val cityId: Int, val today: Boolean) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.fetchWeather(cityId)
+        viewModel.fetchWeather(cityId, today)
 
-        viewModel.weatherLiveData.observe(viewLifecycleOwner) {
-//            binding.tvCity.text = it.name
+        if(today){
             val localdate = LocalDateTime.now()
             val formatter = DateTimeFormatter.ofPattern("MMMM dd, HH:mm")
             binding.tvDatetime.text = localdate.format(formatter)
 
-            val sunrise = LocalDateTime.ofEpochSecond(it.sys?.sunrise?.toLong()!!, 0, ZoneOffset.ofHours(3))
-            val sunset = LocalDateTime.ofEpochSecond(it.sys?.sunset?.toLong()!!, 0, ZoneOffset.ofHours(3))
-
-            Log.d("checksunrise", sunset.format(DateTimeFormatter.ISO_LOCAL_TIME))
-
-            when (it.weather?.get(0)?.main) {
-                "Clear" -> binding.ivWeather.setImageDrawable(resources.getDrawable(R.drawable.ic_sunny))
-                "Clouds" -> binding.ivWeather.setImageDrawable(resources.getDrawable(R.drawable.ic_partlycloudy))
-                "Snow" -> binding.ivWeather.setImageDrawable(resources.getDrawable(R.drawable.ic_snowy))
-                "Rain" -> binding.ivWeather.setImageDrawable(resources.getDrawable(R.drawable.ic_rainy))
-                "Drizzle" -> binding.ivWeather.setImageDrawable(resources.getDrawable(R.drawable.ic_rainy))
-                "Thunderstorm" -> binding.ivWeather.setImageDrawable(resources.getDrawable(R.drawable.ic_rainthunder))
+            viewModel.weatherLiveData.observe(viewLifecycleOwner) {
+                setView(it)
             }
-
-
-
-
-            binding.tvTempmaxmin.text = "Макс. ${it.main?.temp_max?.minus(273)?.toInt()}℃ | Мин. ${it.main?.temp_min?.minus(273)?.toInt()}℃"
-            binding.tvFeelslike.text = "Ощущается как ${it.main?.feels_like?.minus(273)?.toInt()}℃"
-            binding.tvTemperature.text = "${it.main?.temp?.minus(273)?.toInt()}"
-            binding.tvWeather.text = it.weather?.get(0)?.description
+            viewModel.hourlyWeatherLiveData.observe(viewLifecycleOwner) {
+                setRecycler(it)
+            }
         }
-        viewModel.hourlyWeatherLiveData.observe(viewLifecycleOwner) {
-            val adapter = HourlyWeatherRecyclerAdapter(requireContext(), it)
-            binding.rvWeatherHourly.adapter = adapter
+        else{
+            binding.tvDatetime.text = "Завтра"
+
+            viewModel.tomorrowWeatherLiveData.observe(viewLifecycleOwner){
+                setView(it)
+            }
+            viewModel.tomorrowHourlyWeatherLiveData.observe(viewLifecycleOwner) {
+                setRecycler(it)
+            }
         }
+
+    }
+
+    fun setRecycler(it: List<Hourly>){
+        val adapter = HourlyWeatherRecyclerAdapter(requireContext(), it)
+        binding.rvWeatherHourly.adapter = adapter
+    }
+
+    fun setView(it: WeatherResponse){
+
+        when (it.weather?.get(0)?.main) {
+            "Clear" -> binding.ivWeather.setImageDrawable(resources.getDrawable(R.drawable.ic_sunny))
+            "Clouds" -> binding.ivWeather.setImageDrawable(resources.getDrawable(R.drawable.ic_partlycloudy))
+            "Snow" -> binding.ivWeather.setImageDrawable(resources.getDrawable(R.drawable.ic_snowy))
+            "Rain" -> binding.ivWeather.setImageDrawable(resources.getDrawable(R.drawable.ic_rainy))
+            "Drizzle" -> binding.ivWeather.setImageDrawable(resources.getDrawable(R.drawable.ic_rainy))
+            "Thunderstorm" -> binding.ivWeather.setImageDrawable(resources.getDrawable(R.drawable.ic_rainthunder))
+        }
+
+
+
+
+        binding.tvTempmaxmin.text = "Макс. ${it.main?.temp_max?.minus(273)?.toInt()}℃ | Мин. ${it.main?.temp_min?.minus(273)?.toInt()}℃"
+        binding.tvFeelslike.text = "Ощущается как ${it.main?.feels_like?.minus(273)?.toInt()}℃"
+        binding.tvTemperature.text = "${it.main?.temp?.minus(273)?.toInt()}"
+        binding.tvWeather.text = it.weather?.get(0)?.description
+
     }
 
 
