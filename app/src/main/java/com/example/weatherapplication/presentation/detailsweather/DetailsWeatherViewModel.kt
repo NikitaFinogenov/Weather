@@ -22,7 +22,7 @@ class DetailsWeatherViewModel: ViewModel() {
             val lat = weatherLiveData.value!!.coord!!.lat
             val lon = weatherLiveData.value!!.coord!!.lon
 
-            hourlyWeatherLiveData.value = WeatherRepository().getOnecallWeather(lat!!, lon!!).hourly
+            hourlyWeatherLiveData.value = WeatherRepository().getHourlyWeather(lat!!, lon!!).hourly
             Log.d("checkhourlyweather", hourlyWeatherLiveData.value.toString())
         }
     }
