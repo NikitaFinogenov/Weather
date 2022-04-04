@@ -8,8 +8,12 @@ import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import androidx.room.Room
 import com.example.weatherapplication.model.data.City
 import com.example.weatherapplication.model.retrofit.RetrofitInstance
+import com.example.weatherapplication.model.room.AppDatabase
+import com.example.weatherapplication.model.room.CityDB
+import com.example.weatherapplication.model.room.CityDao
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -24,6 +28,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         getCityList()
+
+
 
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
