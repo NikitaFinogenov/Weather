@@ -16,6 +16,8 @@ import com.example.weatherapplication.model.data.Hourly
 import com.example.weatherapplication.model.data.WeatherResponse
 import com.example.weatherapplication.presentation.detailsweather.DetailsWeatherViewModel
 import com.example.weatherapplication.presentation.detailsweather.adapter.HourlyWeatherRecyclerAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -31,6 +33,8 @@ class DayWeatherFragment(val cityId: Int, val today: Boolean) : Fragment() {
         super.onCreate(savedInstanceState)
 
     }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,8 +71,24 @@ class DayWeatherFragment(val cityId: Int, val today: Boolean) : Fragment() {
                 setRecycler(it)
             }
         }
+        viewModel.isFavourite.observe(viewLifecycleOwner) {
+            if (it)
+                binding.ivFav.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_star_24))
+
+            else{
+                binding.ivFav.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_star_outline_24))
+            }
+
+        }
+
+        binding.ivFav.setOnClickListener {
+            viewModel.addOrRemoveFromFavourites(cityId)
+            Log.d("debugdb", "buttonclick")
+        }
+
 
     }
+
 
     fun setRecycler(it: List<Hourly>){
         val adapter = HourlyWeatherRecyclerAdapter(requireContext(), it)
