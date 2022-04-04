@@ -22,6 +22,11 @@ class WeatherListFragment : Fragment() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchWeather()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
