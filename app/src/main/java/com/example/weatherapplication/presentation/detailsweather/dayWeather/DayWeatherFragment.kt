@@ -42,7 +42,7 @@ class DayWeatherFragment(val cityId: Int, val today: Boolean) : Fragment() {
     ): View? {
         viewModel = ViewModelProvider(requireActivity()).get(DayWeatherViewModel::class.java)
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_day_weather, container, false)
-        return inflater.inflate(R.layout.fragment_day_weather, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
